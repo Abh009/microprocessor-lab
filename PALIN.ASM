@@ -1,0 +1,86 @@
+DATA SEGMENT
+    MSG1 DB 10,13,'ENTER ANY STRING :- $'
+    MSG2 DB 10,13,'ENTERED STRING IS :- $'
+    MSG3 DB 10,13,'LENGTH OF STRING IS :- $'
+    MSG4 DB 10,13,'NO, GIVEN STRING IS NOT A PALINDROME $' 
+    MSG5 DB 10,13,'THE GIVEN STRING IS A PALINDROME $'
+    MSG6 DB 10,13,'REVERSE OF ENTERED STRING IS :- $' 
+    P1 LABEL BYTE
+    M1 DB 0FFH
+    L1 DB ?
+    P11 DB 0FFH DUP ('$')
+    P22 DB 0FFH DUP ('$')
+DATA ENDS 
+DISPLAY MACRO MSG
+    mov AH,9
+    LEA DX,MSG
+    INT 21H
+ENDM
+CODE SEGMENT
+    ASSUME CS:CODE,DS:DATA
+START:
+        mov AX,DATA
+        mov DS,AX                
+               
+        DISPLAY MSG1
+       
+        LEA DX,P1
+        mov AH,0AH    
+        INT 21H
+       
+        DISPLAY MSG2
+       
+        DISPLAY P11
+       
+        DISPLAY MSG3
+       
+        mov DL,L1
+        add DL,30H
+        mov AH,2
+        INT 21H
+       
+        DISPLAY MSG6
+               
+        LEA SI,P11
+        LEA DI,P22
+       
+        mov DL,L1
+        DEC DL
+        mov DH,0
+        add SI,DX
+        mov CL,L1
+        mov CH,0
+       
+REVERSE:
+        mov AL,[SI]
+        mov [DI],AL
+        INC DI
+        DEC SI
+        LOOP REVERSE
+       
+        DISPLAY P22
+                      
+        LEA SI,P11
+        LEA DI,P22   
+       
+        mov CL,L1
+        mov CH,0
+       
+CHECK:
+        mov AL,[SI]
+        CMP [DI],AL
+        JNE NOTPALIN
+        INC DI
+        INC SI
+        LOOP CHECK
+     
+       
+        DISPLAY MSG5
+        JMP EXIT
+NOTPALIN:
+        DISPLAY MSG4
+               
+EXIT:   mov AH,4CH
+        INT 21H
+CODE ENDS
+END START

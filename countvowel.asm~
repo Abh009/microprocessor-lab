@@ -1,0 +1,72 @@
+DATA SEGMENT
+    MSG1 DB 10,13,'ENTER ANY STRING : $'
+    MSG3 DB 10,13,'NO OF VOWELS : $' 
+    MSG2 DB 10,13,'NO OF VOWELSSSD : $' 
+   
+    P1 LABEL BYTE
+    M1 DB 0FFH
+    L1 DB ?
+    X DB ?
+    P11 DB 0FFH DUP ('$')
+   
+DATA ENDS
+DISPLAY MACRO MSG
+    MOV AH,9
+    LEA DX,MSG
+    INT 21H
+ENDM   
+CODE SEGMENT
+    ASSUME CS:CODE,DS:DATA
+START:
+        MOV AX,DATA
+        MOV DS,AX                
+               
+        DISPLAY MSG1
+       
+        LEA DX,P1
+        MOV AH,0AH    
+        INT 21H
+      
+        DISPLAY MSG3
+               
+        LEA SI,P11
+        MOV BL, 00
+       
+VCOUNT:
+        MOV AL,[SI]
+        CMP AL, '$'
+        JZ TERMINATE
+        CMP AL, 'A'
+        JZ COUNT
+        CMP AL, 'E'
+        JZ COUNT
+        CMP AL, 'I'
+        JZ COUNT
+        CMP AL, 'O'
+        JZ COUNT
+        CMP AL, 'U'
+        JZ COUNT
+        CMP AL, 'a'
+        JZ COUNT
+        CMP AL, 'e'
+        JZ COUNT
+        CMP AL, 'i'
+        JZ COUNT
+        CMP AL, 'o'
+        JZ COUNT
+        CMP AL, 'u'
+COUNT: 	INC BL
+        
+        DEC DI
+        JMP VCOUNT
+       
+TERMINATE: MOV DL,BL
+        MOV AH,02H
+        INT 21H
+                      
+        LEA SI,P11   
+                       
+        MOV AH,4CH
+        INT 21H
+CODE ENDS
+END START 

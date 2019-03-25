@@ -1,0 +1,51 @@
+.model small
+.stack 100h
+.data
+msg1 db "num : $"
+intosym db "x$"
+equals db "=$"
+
+.code
+mov ax, @data
+mov ds, ax
+
+mov dx, offset msg1
+mov ah, 09h
+int 21h
+
+mov ah,01h
+int 21h
+mov bl, al
+
+mov cl, 5h
+start: add cl, 30h
+mov dl, cl
+mov ah, 02h
+int 21h
+sub cl,30h
+
+mov dx, offset intosym
+mov ah, 09h
+int 21h
+
+mov dl, bl
+mov ah, 02h
+int 21h
+
+mov dx, offset equals
+mov ah, 09h
+int 21h
+
+mul cl
+
+mov dl, bl
+mov ah, 02h
+int 21h
+
+dec cl
+cmp cl, 00h
+jnz start
+ 
+mov ah, 4ch
+int 21h
+end
